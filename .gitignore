@@ -1,0 +1,10 @@
+# Django
+__pycache__/
+*.py[cod]
+local_settings.py
+
+# 環境変数
+.env
+
+# DB
+db.sqlite3
