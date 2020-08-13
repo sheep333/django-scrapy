@@ -10,7 +10,6 @@ isort = "*"
 [packages]
 line-bot-sdk = "*"
 django = "*"
-django-admin-tools = "*"
 
 [requires]
 python_version = "3.8"
