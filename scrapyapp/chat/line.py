@@ -43,12 +43,15 @@ class LineBotModule:
 
     def _execute(self, body, signature):
         # handle webhook body
+        # @add.handleで扱うことのできるイベントとメッセージを追加
         try:
             self.handler.handle(body, signature)
         except InvalidSignatureError:
             logger.error("Invalid signature. Please check your channel access token/channel secret.")
 
     def _message_data_save(self, event):
+        # LINEでの質問への回答を一時保存
+        # 一時保存が不要であれば、直接ユーザデータへ保存でもOK
         try:
             LineInputData(
                 user_id=event.source.user,
