@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'register.apps.RegisterConfig'
+    'register.apps.RegisterConfig',
+    'chat.apps.ChatConfig',
 ]
 
 MIDDLEWARE = [
@@ -122,3 +123,7 @@ STATIC_URL = '/static/'
 
 # user model
 AUTH_USER_MODEL = 'register.User'
+
+# line api
+CHANEL_ACCESS_TOKEN = os.getenv('CHANEL_ACCESS_TOKEN')
+CHANNEL_SECRET = os.getenv('CHANNEL_SECRET')
