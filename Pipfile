@@ -4,8 +4,13 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+flake8 = "*"
+isort = "*"
 
 [packages]
+line-bot-sdk = "*"
+django = "*"
+django-admin-tools = "*"
 
 [requires]
 python_version = "3.8"
