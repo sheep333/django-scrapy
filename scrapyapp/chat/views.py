@@ -5,7 +5,7 @@ from .line import LineBotModule
 
 
 def line_callback(request):
-    if request.method == "POST":
-        LineBotModule(request)
-        return 'OK'
-    return Http404
+    if request.method != "POST":
+        raise Http404
+    LineBotModule(request)
+    return 'OK'
