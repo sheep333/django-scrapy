@@ -62,8 +62,8 @@ class UserCreate(generic.CreateView):
             'user': user,
         }
 
-        subject = render_to_string(f'register/mail_template/create/subject.txt', context)
-        message = render_to_string(f'register/mail_template/create/message.txt', context)
+        subject = render_to_string('register/mail_template/create/subject.txt', context)
+        message = render_to_string('register/mail_template/create/message.txt', context)
 
         user.email_user(subject, message)
         return redirect('register:user_create_done')
