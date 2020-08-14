@@ -8,3 +8,6 @@ local_settings.py
 
 # DB
 db.sqlite3
+
+#vscode settings
+.vscode/
