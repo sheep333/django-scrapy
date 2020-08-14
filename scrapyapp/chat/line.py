@@ -22,11 +22,13 @@ from linebot.models import (
 import logging
 
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.db import DataError
 
+from job.models import UserInfo, JobHistory
 from .models import LineInputData
 
-
+User = get_user_model()
 logger = logging.getLogger(__name__)
 
 
@@ -38,8 +40,8 @@ class LineBotModule:
         # get X-Line-Signature header value
         signature = request.headers['X-Line-Signature']
         body = request.get_data(as_text=True)
-        self._execute(signature, body)
         logger.info("Request body: " + body)
+        self._execute(signature, body)
 
     def _execute(self, body, signature):
         # handle webhook body
@@ -75,13 +77,32 @@ class LineBotModule:
     @handler.add(MessageEvent, message=TextMessage)
     def handle_message(self, event):
         self._message_data_save(event)
-        self.line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text=event.message.text)
-        )
-        text = event.message.text
 
-        if text == 'profile':
+        text = event.message.text
+        if text == 'finished':
+            try:
+                user_data = LineInputData.objects.filter(user_id=event.source.user)
+                user = User.create(
+                    first_name=user_data.object.filter(question='first_name').answer,
+                    last_name=user_data.object.filter(question='last_name').answer,
+                )
+                user_info = UserInfo.create(
+                    user=user,
+                    motive=user_data.object.filter(question='motive').answer,
+                )
+                job_histories_count = user_data.filter(question__startwith='job_history').count
+                for i in range(job_histories_count):
+                    JobHistory.create(
+                        user_info=user_info,
+                        start_date=user_data.object.filter(question=f'start_date_{i}').answer,
+                        end_date=user_data.object.filter(question=f'end_date_{i}').answer,
+                        history=user_data.object.filter(question=f'job_history_{i}').answer,
+                    )
+                logger.info(f'Create user:{user.id} user_info:{user_info.id}')
+            except Exception:
+                raise DataError
+
+        elif text == 'profile':
             if isinstance(event.source, SourceUser):
                 profile = self.line_bot_api.get_profile(event.source.user_id)
                 self.line_bot_api.reply_message(
